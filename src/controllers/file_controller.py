@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from src.services.file_service import allowed_file
+from src.services.file_service import allowed_file, is_valid, process_file
 from src.services.classification_service import classify_file
 
 """
@@ -24,5 +24,7 @@ def classify_file_route():
     if not allowed_file(file.filename):
         return jsonify({"error": f"File type not allowed"}), 400
 
+    # TODO: Modify this after implementing new classification method
+    file_text = process_file(file)
     file_class = classify_file(file)
     return jsonify({"file_class": file_class}), 200
