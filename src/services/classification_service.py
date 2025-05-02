@@ -1,6 +1,10 @@
 from werkzeug.datastructures import FileStorage
 
 def classify_file(file: FileStorage):
+    """
+    Classifies the file using its filename.
+    """
+
     filename = file.filename.lower()
     # file_bytes = file.read()
 
