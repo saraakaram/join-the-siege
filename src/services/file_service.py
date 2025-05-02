@@ -20,15 +20,9 @@ def is_valid(extension: str) -> bool:
     """
     return extension in ALLOWED_EXTENSIONS
 
-def process_file(file: FileStorage) -> str:
+def process_file(file: FileStorage, file_extension: str) -> str:
     """
-    Validates and processes file.
     Returns file content.
     """
-    file_extension = get_file_extension(file.filename)
-
-    if not is_valid(file_extension):
-        raise TypeError("Invalid file type.")
-    
     file_processor = get_processor(file_extension)
     return file_processor.process(file)
