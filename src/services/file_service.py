@@ -7,7 +7,8 @@ def get_file_extension(filename: str) -> str:
     """
     Extracts file extension.
     """
-    return filename.rsplit('.', 1)[1].lower()
+    
+    return filename.rsplit('.', 1)[1].lower() if "." in filename else ""
 
 def is_valid(extension: str) -> bool:
     """
