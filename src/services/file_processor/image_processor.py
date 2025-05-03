@@ -6,15 +6,15 @@ import easyocr
 from PIL import Image
 import numpy as np
 
-reader = easyocr.Reader(['en'], gpu=False) # Loads once when the module is imported
-
+def get_reader():
+    return easyocr.Reader(['en'], gpu=False)  # ✅ Downloads only when needed
 class ImageProcessor(AbstractFileProcessor):
     """ Processes image files """
     def process(self, file: FileStorage) -> str:
         try:
             image = Image.open(BytesIO(file.read())).convert("RGB")
             img_np = np.array(image)
-            result = reader.readtext(img_np, detail=0)
+            result = get_reader().readtext(img_np, detail=0)
             file.stream.seek(0)
             text = "\n".join(result)
             if not text.strip():
