@@ -27,6 +27,10 @@ def classify_file_route():
         return jsonify({"error": f"File type not allowed"}), 400
 
     file_text = process_file(file, file_extension)
+
+    if not file_text:
+        return jsonify({"error": f"Document content not found"}), 400
+    
     file_class = model_service.classify_file(file_text)
     return jsonify({"file_class": file_class}), 200
 
@@ -48,8 +52,11 @@ def add_file_type():
     if not is_valid(file_extension):
         return jsonify({"error": "File type not allowed"}), 400
 
+    file_text = process_file(sample_file, file_extension)
+    if not file_text:
+        return jsonify({"error": f"Document content not found"}), 400
+    
     try:
-        file_text = process_file(sample_file, file_extension)
         model_service.embed_file(file_type, file_text)
         return jsonify({"message": f"File type '{file_type}' registered successfully."}), 200
     except Exception as e:
