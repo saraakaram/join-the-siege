@@ -1,76 +1,153 @@
-# Heron Coding Challenge - File Classifier
+# Heron File Classifier
 
-## Overview
+This project is a real-world challenge to improve and productionize a file classification service. The goal is to build a scalable, maintainable, and intelligent system that can classify poorly named documents by analyzing their content, support new file types, and be ready for deployment.
 
-At Heron, we’re using AI to automate document processing workflows in financial services and beyond. Each day, we handle over 100,000 documents that need to be quickly identified and categorised before we can kick off the automations.
+---
 
-This repository provides a basic endpoint for classifying files by their filenames. However, the current classifier has limitations when it comes to handling poorly named files, processing larger volumes, and adapting to new industries effectively.
+## Features
 
-**Your task**: improve this classifier by adding features and optimisations to handle (1) poorly named files, (2) scaling to new industries, and (3) processing larger volumes of documents.
+- Semantic classification using [Sentence-BERT](https://www.sbert.net/)
+- Supports PDF, Word, Excel, JPG, PNG
+- Dynamic addition of new file classes
+- Unit and integration tests for endpoints
+- Dockerized for production
 
-This is a real-world challenge that allows you to demonstrate your approach to building innovative and scalable AI solutions. We’re excited to see what you come up with! Feel free to take it in any direction you like, but we suggest:
+---
 
+## Project Structure
 
-### Part 1: Enhancing the Classifier
+```
 
-- What are the limitations in the current classifier that's stopping it from scaling?
-- How might you extend the classifier with additional technologies, capabilities, or features?
+join-the-siege/
+│
+├── src/
+│   ├── app.py                 # Flask app entrypoint
+│   ├── config.py              # Constants and paths
+│   ├── controllers/           # Route definitions
+│   ├── services/              # Business logic (file processing, model, JSON)
+│   ├── assets/embeddings/     # Embedding store (JSON)
+│   └── exceptions/            # Custom exceptions
+│
+├── files/                     # Sample files for testing
+├── tests/                     # Pytest test suite
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml          # GitHub Actions for CI/CD
+├── requirements.txt
+├── Dockerfile
+└── README.md
 
+````
 
-### Part 2: Productionising the Classifier 
+---
 
-- How can you ensure the classifier is robust and reliable in a production environment?
-- How can you deploy the classifier to make it accessible to other services and users?
+## Setup & Installation
 
-We encourage you to be creative! Feel free to use any libraries, tools, services, models or frameworks of your choice
+### 1. Clone the repo
+```bash
+git clone https://github.com/saraakaram/heron-classifier.git
+cd heron-classifier
+````
 
-### Possible Ideas / Suggestions
-- Train a classifier to categorize files based on the text content of a file
-- Generate synthetic data to train the classifier on documents from different industries
-- Detect file type and handle other file formats (e.g., Word, Excel)
-- Set up a CI/CD pipeline for automatic testing and deployment
-- Refactor the codebase to make it more maintainable and scalable
+### 2. Install dependencies
 
-## Marking Criteria
-- **Functionality**: Does the classifier work as expected?
-- **Scalability**: Can the classifier scale to new industries and higher volumes?
-- **Maintainability**: Is the codebase well-structured and easy to maintain?
-- **Creativity**: Are there any innovative or creative solutions to the problem?
-- **Testing**: Are there tests to validate the service's functionality?
-- **Deployment**: Is the classifier ready for deployment in a production environment?
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
+---
 
-## Getting Started
-1. Clone the repository:
-    ```shell
-    git clone <repository_url>
-    cd heron_classifier
-    ```
+## Run the App (Dev Mode)
 
-2. Install dependencies:
-    ```shell
-    python -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    ```
+```bash
+python src/app.py
+```
 
-3. Run the Flask app:
-    ```shell
-    python -m src.app
-    ```
+Server runs at `http://localhost:5000`
 
-4. Test the classifier using a tool like curl:
-    ```shell
-    curl -X POST -F 'file=@path_to_pdf.pdf' http://127.0.0.1:5000/classify_file
-    ```
+---
 
-5. Run tests:
-   ```shell
-    pytest
-    ```
+## Run Tests
 
-## Submission
+```bash
+pytest
+```
 
-Please aim to spend 3 hours on this challenge.
+---
 
-Once completed, submit your solution by sharing a link to your forked repository. Please also provide a brief write-up of your ideas, approach, and any instructions needed to run your solution. 
+## Docker
+
+### Build image
+
+```bash
+docker build -t heron-classifier .
+```
+
+### Run container
+
+```bash
+docker run -p 5000:5000 heron-classifier
+```
+
+---
+
+## API Endpoints
+
+### `POST /classify_file`
+
+Classifies an uploaded file.
+
+**Body (multipart/form-data):**
+
+* `file`: document (PDF, Word, Excel, JPG, PNG)
+
+**Response:**
+
+```json
+{ "file_class": "invoice" }
+```
+
+---
+
+### `POST /add_class`
+
+Registers a new file type by providing a sample document.
+
+**Body (multipart/form-data):**
+
+* `file_type`: string (e.g., "tax\_document")
+* `file`: sample file for that type
+
+**Response:**
+
+```json
+{ "message": "File type 'tax_document' registered successfully." }
+```
+
+---
+
+### `GET /health`
+
+Simple health check.
+
+```json
+{ "status": "OK" }
+```
+
+---
+
+## Notes
+
+* Reference embeddings are stored in: `src/assets/embeddings/embeddings.json`
+* For detailed explanation of the classification strategy and codebase structure, please refer to Solution_Overview.pdf
+
+---
+
+## Author
+
+Built with ❤️ by Sara Karam for Heron Data
+GitHub: [@saraakaram](https://github.com/saraakaram)
+
+---
